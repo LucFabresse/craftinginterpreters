@@ -20,3 +20,6 @@ xcuserdata/
 
 # I store a Python venv here, but
 /util/env/
+
+# Pharo temp files 
+Pharo*
