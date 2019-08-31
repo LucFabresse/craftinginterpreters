@@ -1,6 +1,4 @@
-
-
-all: phlox.image 
+all: openPhlox
 	
 pharo.image:
 	wget -O - get.pharo.org/64/80 | bash
@@ -9,10 +7,15 @@ pharo-ui:
 	wget -O - get.pharo.org/64/vm80 | bash
 	
 phlox.image: pharo.image pharo-ui
-	./pharo Pharo.image --save --quit
+	./pharo Pharo.image save phlox
+	./pharo phlox.image metacello install gitlocal://.. BaselineOfPhlox
+	./pharo phlox.image eval --save "IceRepository registry detect: [ :r | r name = '..' ] ifFound: [ :r | r name: 'craftinginterpreters']"
 	
-	COMMAND ./pharo Pharo.image --save --quit ${CMAKE_CURRENT_SOURCE_DIR_TO_OUT}/scripts/installVMMaker.st ${CMAKE_CURRENT_SOURCE_DIR_TO_OUT}
-	CMakeLists.txt:215:  COMMAND ./pharo Pharo.image save VMMaker --delete-old
+openPhlox: phlox.image
+	./pharo-ui phlox.image
 
 clean:
-	@rm -fr pharo-* pharo.*
+	@rm -fr {p,P}haro*
+	@rm -fr phlox.{image,changes}
+
+.PHONY: all clean openPharo
